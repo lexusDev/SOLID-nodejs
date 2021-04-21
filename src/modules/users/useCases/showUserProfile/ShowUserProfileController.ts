@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { User } from "modules/users/model/User";
 
 import { ShowUserProfileUseCase } from "./ShowUserProfileUseCase";
 
@@ -8,7 +9,13 @@ class ShowUserProfileController {
   handle(request: Request, response: Response): Response {
     const { user_id } = request.params;
 
-    const user = this.showUserProfileUseCase.execute({ user_id });
+    let user: User;
+
+    try {
+      user = this.showUserProfileUseCase.execute({ user_id });
+    } catch (error) {
+      return response.status(404).json({ error });
+    }
 
     return response.json(user);
   }
